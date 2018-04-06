@@ -4,40 +4,24 @@
 """
 __author__ = 'Alimazing'
 
-class BookViewModel():
-	@classmethod
-	def package_singel(cls, data, keyword):
-		returned = {
-			'books': [],
-			'total': 0,
-			'keyword': keyword
-		}
-		if data:
-			returned['total'] = 1
-			returned['books'] = [cls.__cut_book_data(data)]
-		return returned
+class BookViewModel:
+	def __init__(self, book):
+		self.title = book['title']
+		self.publisher = book['publisher']
+		self.author = '、'.join(book['author'])
+		self.image = book['image']
+		self.price = book['price']
+		self.summary = book['summary']
+		self.pages = book['pages']
 
-	@classmethod
-	def package_collection(cls, data, keyword):
-		returned = {
-			'books': [],
-			'total': 0,
-			'keyword': keyword
-		}
-		if data:
-			returned['total'] = data['total']
-			returned['books'] = [cls.__cut_book_data(book) for book in data['books']]
-		return returned
 
-	@staticmethod
-	def __cut_book_data(data):
-		book = {
-			'title': data['title'],
-			'publisher': data['publisher'],
-			'author': '、'.join(data['author']),
-			'pages': data['pages'] or '',
-			'price': data['price'],
-			'summary': data['summary'] or 'z',
-			'image': data['image']
-		}
-		return book
+class BookCollection:
+	def __init__(self):
+		self.total = []
+		self.books = []
+		self.keyword = ''
+
+	def fill(self, yushu_book, keyword):
+		self.total = yushu_book.total
+		self.keyword = keyword
+		self.books = [BookViewModel(book) for book in yushu_book.books]
