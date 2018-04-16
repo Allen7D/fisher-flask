@@ -3,7 +3,9 @@
   Created by Alimazing on 2018/4/2.
 """
 from wtforms import Form, StringField, IntegerField
-from wtforms.validators import Length, NumberRange, DataRequired
+from wtforms.validators import Length, NumberRange, DataRequired, ValidationError
+
+from app.libs.helper import is_isbn_or_key
 
 __author__ = 'Alimazing'
 

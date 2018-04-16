@@ -4,7 +4,7 @@
 """
 from sqlalchemy import Column, Integer, String, Boolean, Float
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import UserMixin, current_user
+from flask_login import UserMixin
 
 from app import login_manager
 from app.libs.helper import is_isbn_or_key
@@ -47,24 +47,19 @@ class User(UserMixin, Base):
 		if not yushu_book.first:
 			return False
 
-		gifting = Gift.query.filter_by(uid=self.id, isbn=isbn,
-		                               launched=False).first()
-		wishing = Wish.query.filter_by(uid=self.id, isbn=isbn,
-		                               launched=False).first()
-		if not gifting and not wishing:
-			return True
-		else:
+		has_in_gifts, has_in_wishes = self.has_in_list(isbn)
+		if has_in_gifts or has_in_gifts:
 			return False
+		else:
+			return True
 
 	def has_in_list(self, isbn):
-		has_in_gifts = False
-		has_in_wishes = False
-		if Gift.query.filter_by(uid=current_user.id, isbn=isbn,
-		                        launched=False).first():
-			has_in_gifts = True
-		if Wish.query.filter_by(uid=current_user.id, isbn=isbn,
-		                        launched=False).first():
-			has_in_wishes = True
+		gifting = Gift.query.filter_by(uid=self.id, isbn=isbn,
+		                        launched=False).first()
+		wishing = Wish.query.filter_by(uid=self.id, isbn=isbn,
+		                        launched=False).first()
+		has_in_gifts, has_in_wishes = map(lambda x: x is not None, [gifting, wishing])
+
 		return (has_in_gifts, has_in_wishes)
 
 @login_manager.user_loader

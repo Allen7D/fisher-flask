@@ -2,8 +2,9 @@
 __pycache__/
 *.py[cod]
 *$py.class
+
 .DS_Store
-/test/
+test/
 
 # Editor directories and files
 .idea
